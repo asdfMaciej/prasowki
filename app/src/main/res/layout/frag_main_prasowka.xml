@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp"
+    android:background="@color/colorAccent"
+    android:id="@+id/llPrasowka">
+
+    <TextView
+        android:text="2017-05-12"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/txtDate"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textSize="18sp"
+        android:textColor="?android:attr/textColorSecondaryInverse"
+        android:textAlignment="center"
+        android:fontFamily="sans-serif-condensed"
+        android:layout_marginBottom="2dp" />
+
+    <TextView
+        android:text="DWA DOKUMENTY PODPISANE W PEKINIE PODCZAS SPOTKANIA PREMIERÓW POLSKI I CHIN"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/txtTitle"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textSize="24sp"
+        android:textColor="?android:attr/textColorPrimaryInverse"
+        android:textAlignment="center"
+        android:fontFamily="sans-serif-condensed"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:text="Efektem piątkowych rozmów w Pekinie szefowej polskiego rządu Beaty Szydło i premiera Chin Li Keqianga było podpisanie dwóch dokumentów dotyczących..."
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/txtSummary"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textSize="16sp"
+        android:textColor="?android:attr/textColorTertiaryInverse"
+        android:textAlignment="center"
+        android:fontFamily="sans-serif" />
+
+    <TextView
+        android:text="POLSKA"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/txtCategory"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textSize="18sp"
+        android:textColor="?android:attr/colorAccent"
+        android:textAlignment="center"
+        android:fontFamily="sans-serif"
+        android:drawable="?android:attr/textColorPrimaryInverse"
+        android:background="?android:attr/colorBackground"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="8dp"
+        android:padding="4dp" />
+</LinearLayout>

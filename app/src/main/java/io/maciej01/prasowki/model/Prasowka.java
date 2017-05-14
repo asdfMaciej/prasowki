@@ -52,17 +52,17 @@ public class Prasowka extends SugarRecord implements Serializable, Cloneable, Co
         return bEquals;
     }
 
-    public void setEssentials(String title, String summary,
+    public void setEssentials(String title, String summary, String category,
                               String date, String urlArticle, String urlImage) {
         this.pTitle = title;
         this.pSummary = summary;
+        this.pCategory = category;
         this.pDateString = date;
         this.pUrlArticle = urlArticle;
         this.pUrlImage = urlImage;
     }
 
-    public void setDetails(String category, String desc) {
-        this.pCategory = category;
+    public void setDetails(String desc) {
         this.pDesc = desc;
     }
 

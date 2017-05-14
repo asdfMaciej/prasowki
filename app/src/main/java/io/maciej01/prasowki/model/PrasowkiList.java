@@ -47,6 +47,14 @@ public class PrasowkiList implements Serializable {
         return null;
     }
 
+    public boolean isIn(Prasowka pras) {
+        boolean jest = false;
+        for (Prasowka p: lista) {
+            if (pras.fEquals(p)) {jest = true;} // URL match only
+        }
+        return jest;
+    }
+
     public int size() {return lista.size();}
     public Prasowka get(int n) {return lista.get(n);}
     public ArrayList<Prasowka> getLista() { return lista; }
