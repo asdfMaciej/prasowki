@@ -1,11 +1,14 @@
 package io.maciej01.prasowki.activity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +24,7 @@ import io.maciej01.prasowki.presenter.MainPresenter;
  * Created by Maciej on 2017-05-13.
  */
 
+@SuppressLint("ValidFragment")
 public class MainFragment extends Fragment implements MainPresenter.ViewContract {
     /*
     TO-DO:
@@ -31,8 +35,9 @@ public class MainFragment extends Fragment implements MainPresenter.ViewContract
     MainPresenter mainPresenter;
     View rootView;
     RecyclerView recyclerView;
-    MainPrasowkaAdapter adapter;
+    MainPrasowkaAdapter adapter = null;
     MainActivity context;
+    PrasowkiList lista = DBHelper.getInstance().getLista();
 
     @SuppressLint("ValidFragment")
     public MainFragment(MainActivity context) {
@@ -59,9 +64,18 @@ public class MainFragment extends Fragment implements MainPresenter.ViewContract
     }
 
     @Override
-    public void test() {
-        //TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-        //textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+    public void updateRecyclerView() {
+        context.updateRecyclerViews();
+    }
+
+    public void _updateRecyclerView() {
+        if (adapter != null) {
+            lista.sort();
+            initAdapter();
+            adapter.notifyDataSetChanged();
+        } else {
+            Log.v("mainfragment", "adapter is null");
+        }
     }
 
     @Override
@@ -69,18 +83,24 @@ public class MainFragment extends Fragment implements MainPresenter.ViewContract
         return getArguments().getInt(ARG_SECTION_NUMBER);
     }
 
+    @Override
+    public Activity getAct() { return context; }
+
     private void initFragment() {
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recMain);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        //recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-
-        // ustawiamy animatora, który odpowiada za animację dodania/usunięcia elementów listy
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-
-        PrasowkiList lista = DBHelper.getInstance().getLista();
-        adapter = new MainPrasowkaAdapter(recyclerView, lista, context);
+        initAdapter();
+    }
+    private void initAdapter() {
+        PrasowkiList lis = null;
+        int n = getSectionNumber();
+        if (n == 1) {lis = lista;}
+        else if (n == 2) {lis = lista.getPolska();}
+        else if (n == 3) {lis = lista.getSwiat();}
+        adapter = new MainPrasowkaAdapter(recyclerView, lis, context);
         recyclerView.setAdapter(adapter);
     }
 }

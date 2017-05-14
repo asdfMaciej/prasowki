@@ -68,6 +68,8 @@ public class PrasowkiFetcher {
             if (!lista.isIn(p)) {lista.add(p);}
         }
         Log.v("prasowkifetcher", doc.title());
+        callback.uponFetching();
+
     }
 
     private Prasowka prasowkaFromElement(Element e) {
@@ -77,13 +79,9 @@ public class PrasowkiFetcher {
         String category = categoryFromClass(e.className());
         String urlArticle = e.select("div.cb-mask").get(0).select("a").attr("href");
         String urlImage = e.select("div.cb-mask").get(0).select("img").attr("src");
-        Log.v("title", category+title+dateString+summary);
-        Log.v("url", urlArticle);
-        Log.v("url", urlImage);
 
         Prasowka p = new Prasowka();
         p.setEssentials(title, summary, category, dateString, urlArticle, urlImage);
-
         return p;
     }
 
@@ -94,20 +92,16 @@ public class PrasowkiFetcher {
         String category = categoryFromClass(e.className());
         String urlArticle = e.select("div.cb-grid-img").get(0).select("a").attr("href");
         String urlImage = e.select("div.cb-grid-img").get(0).select("img").attr("src");
-        Log.v("title", category+title+dateString+summary);
-        Log.v("url", urlArticle);
-        Log.v("url", urlImage);
 
         Prasowka p = new Prasowka();
         p.setEssentials(title, summary, category, dateString, urlArticle, urlImage);
-
         return p;
     }
 
     private String categoryFromClass(String s) {
         String category = null;
         if (s.contains("category-polska")) { category = "polska"; }
-        if (s.contains("category-swiat")) { category = "swiat"; }
+        if (s.contains("category-swiat")) { category = "świat"; }
         return category;
     }
 }

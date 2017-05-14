@@ -12,6 +12,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
+
 import io.maciej01.prasowki.R;
 import io.maciej01.prasowki.helper.DBHelper;
 import io.maciej01.prasowki.model.Prasowka;
@@ -34,11 +36,16 @@ public class MainActivity extends AppCompatActivity {
      */
     private ViewPager mViewPager;
 
+    public void updateRecyclerViews() {
+        for (MainFragment frag : mSectionsPagerAdapter.getFragmenty()) {
+            frag._updateRecyclerView();
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.act_main);
-        Prasowka.executeQuery("DELETE FROM PRASOWKA WHERE P_TITLE = \"testowa\";");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -82,15 +89,19 @@ public class MainActivity extends AppCompatActivity {
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
+        ArrayList<MainFragment> fragmenty = new ArrayList<>();
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
+            int[] xD = {0, 1, 2};
+            for (int i: xD) {
+                fragmenty.add(MainFragment.newInstance(MainActivity.this, i + 1));
+            }
+
         }
 
         @Override
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return MainFragment.newInstance(MainActivity.this, position + 1);
+            return fragmenty.get(position);
         }
 
         @Override
@@ -103,13 +114,15 @@ public class MainActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "SECTION 1";
+                    return "wszystko";
                 case 1:
-                    return "SECTION 2";
+                    return "polska";
                 case 2:
-                    return "SECTION 3";
+                    return "świat";
             }
             return null;
         }
+
+        public ArrayList<MainFragment> getFragmenty() { return fragmenty; }
     }
 }

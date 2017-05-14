@@ -12,7 +12,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:name="com.orm.SugarApp">
+        android:name="io.maciej01.prasowki.activity.MyApplication">
 
         <meta-data
             android:name="VERSION"

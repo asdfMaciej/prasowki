@@ -26,6 +26,7 @@ public class PrasowkiList implements Serializable {
 
     public void sort() {
         Collections.sort(lista);
+        Collections.reverse(lista); // date descending
     }
 
     public void add(Prasowka p) {
@@ -36,6 +37,10 @@ public class PrasowkiList implements Serializable {
         lista.add(n, p);
         p.save();
     }
+
+
+    public PrasowkiList getPolska() { return getByCategory("polska");}
+    public PrasowkiList getSwiat() { return getByCategory("świat");}
 
     public Integer findIndex(Prasowka pras) {
         Integer index = null;
@@ -53,6 +58,16 @@ public class PrasowkiList implements Serializable {
             if (pras.fEquals(p)) {jest = true;} // URL match only
         }
         return jest;
+    }
+
+    private PrasowkiList getByCategory(String category) {
+        ArrayList<Prasowka> arr = new ArrayList<>();
+        for (Prasowka p : lista) {
+            if (p.getCategory().equals(category)) {
+                arr.add(p);
+            }
+        }
+        return new PrasowkiList(arr);
     }
 
     public int size() {return lista.size();}

@@ -1,9 +1,13 @@
 package io.maciej01.prasowki.presenter;
 
+import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
 
 import java.io.IOException;
 
+import io.maciej01.prasowki.activity.MainActivity;
+import io.maciej01.prasowki.activity.MyApplication;
 import io.maciej01.prasowki.helper.PrasowkiFetcher;
 
 /**
@@ -12,7 +16,8 @@ import io.maciej01.prasowki.helper.PrasowkiFetcher;
 
 public class MainPresenter {
     public interface ViewContract {
-        void test();
+        void updateRecyclerView();
+        Activity getAct();
         int getSectionNumber();
     }
 
@@ -38,14 +43,18 @@ public class MainPresenter {
             e.printStackTrace();
         }
     }
+
+    public void uponFetching() {
+        viewContract.updateRecyclerView();
+        Log.v("mainpresenter", "updaterecycler");
+    }
     private void initializeView() {
-        viewContract.test();
-        /*if (viewContract.getSectionNumber() == 1) {
-            Log.v("mainpresenter", "section number 1");
+        MyApplication app = ((MyApplication) viewContract.getAct().getApplication());
+        if (!app.getFetched()) {
+            app.setFetched(true);
+            Log.v("mainpresenter", "fetching");
             fetch();
-        } else {
-            Log.v("mainpresenter", Integer.toString(viewContract.getSectionNumber()));
-        }*/
+        }
     }
     private void onAttach() {}
     private void onDetach() {}
