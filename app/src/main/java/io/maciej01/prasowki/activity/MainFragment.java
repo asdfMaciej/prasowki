@@ -8,18 +8,20 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import io.maciej01.prasowki.R;
+import io.maciej01.prasowki.presenter.MainPresenter;
 
 /**
  * Created by Maciej on 2017-05-13.
  */
 
-public class MainFragment extends Fragment {
+public class MainFragment extends Fragment implements MainPresenter.ViewContract {
     /**
      * The fragment argument representing the section number for this
      * fragment.
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
-
+    MainPresenter mainPresenter;
+    View rootView;
     public MainFragment() {
     }
 
@@ -38,9 +40,16 @@ public class MainFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.frag_main, container, false);
+        View root = inflater.inflate(R.layout.frag_main, container, false);
+        rootView = root;
+        mainPresenter = new MainPresenter();
+        mainPresenter.attachView(this);
+        return rootView;
+    }
+
+    @Override
+    public void test() {
         TextView textView = (TextView) rootView.findViewById(R.id.section_label);
         textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
-        return rootView;
     }
 }

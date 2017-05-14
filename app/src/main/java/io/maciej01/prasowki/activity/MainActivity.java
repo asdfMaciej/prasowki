@@ -13,6 +13,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import io.maciej01.prasowki.R;
+import io.maciej01.prasowki.helper.DBHelper;
+import io.maciej01.prasowki.model.Prasowka;
+import io.maciej01.prasowki.model.PrasowkiList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -48,6 +51,10 @@ public class MainActivity extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+
+        DBHelper help = DBHelper.getInstance();
+        PrasowkiList lista = help.getLista();
+        lista.add(new Prasowka("testowa", "2017-01-26", "Podsumowanie lorem impsum dolar sit amet."));
 
     }
 

@@ -3,12 +3,15 @@ package io.maciej01.prasowki.model;
 import com.orm.SugarRecord;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by Maciej on 2017-05-14.
  */
 
-public class Prasowka extends SugarRecord implements Serializable, Cloneable {
+public class Prasowka extends SugarRecord implements Serializable, Cloneable, Comparable<Prasowka> {
     private String pTitle = "";
     private String pDateString = "";
     private String pCategory = ""; // świat/polska
@@ -63,6 +66,17 @@ public class Prasowka extends SugarRecord implements Serializable, Cloneable {
         this.pDesc = desc;
     }
 
+    public Date getDate() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-DD");
+        Date d = null;
+        try {
+            d = dateFormat.parse(pDateString);
+        } catch (ParseException e) { // this literally won't ever happen
+            e.printStackTrace();
+        }
+        return d;
+    }
+
     public String getTitle() { return this.pTitle; }
     public String getDateString() { return this.pDateString; }
     public String getCategory() { return this.pCategory; }
@@ -70,5 +84,10 @@ public class Prasowka extends SugarRecord implements Serializable, Cloneable {
     public String getSummary() { return this.pSummary; }
     public String getUrlArticle() { return this.pUrlArticle; }
     public String getUrlImage() { return this.pUrlImage; }
+
+    @Override
+    public int compareTo(Prasowka p) {
+        return getDate().compareTo(p.getDate());
+    }
 
 }
