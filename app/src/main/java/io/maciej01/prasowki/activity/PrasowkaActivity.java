@@ -94,7 +94,8 @@ public class PrasowkaActivity extends AppCompatActivity implements MainPresenter
             ArrayList<Prasowka> _l = new ArrayList<>();
             _l.add(prasowka);
             PrasowkiList meme = new PrasowkiList(_l);
-            adapter = new MainPrasowkaAdapter(recyclerView, meme, this, this);
+            int pos = mainPresenter.getListBySectionNumber().findFastIndex(prasowka);
+            adapter = new MainPrasowkaAdapter(recyclerView, meme, this, this, pos);
             recyclerView.setAdapter(adapter);
             desc.setText(prasowka.getDesc());
         }
@@ -135,7 +136,7 @@ public class PrasowkaActivity extends AppCompatActivity implements MainPresenter
     }
 
     @Override
-    public void openPrasowka(Prasowka p) {
+    public void openPrasowka(Prasowka p, int n) {
         return;
     }
 

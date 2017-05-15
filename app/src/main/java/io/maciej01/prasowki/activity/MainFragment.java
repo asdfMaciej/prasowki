@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import io.maciej01.prasowki.R;
@@ -126,10 +128,12 @@ public class MainFragment extends Fragment implements MainPresenter.ViewContract
     }
 
     @Override
-    public void openPrasowka(Prasowka p) {
+    public void openPrasowka(Prasowka p, int n) {
         Intent i = new Intent(getAct(), PrasowkaActivity.class);
         i.putExtra("prasowka", p);
-        startActivity(i);
+        LinearLayout ll = (LinearLayout) recyclerView.findViewHolderForAdapterPosition(n).itemView.findViewById(R.id.llPrasowka);
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), ll, "linear");
+        startActivity(i, options.toBundle());
     }
 
     @Override
@@ -156,7 +160,7 @@ public class MainFragment extends Fragment implements MainPresenter.ViewContract
     }
     private void initAdapter() {
         PrasowkiList lis = mainPresenter.getListBySectionNumber();
-        adapter = new MainPrasowkaAdapter(recyclerView, lis, getAct(), this);
+        adapter = new MainPrasowkaAdapter(recyclerView, lis, getAct(), this, -1);
         recyclerView.setAdapter(adapter);
     }
 

@@ -37,7 +37,7 @@ public class MainPresenter implements PrasowkiFetcher.PrasowkiFetcherCallback {
         void updateRecyclerView();
         void showSpinner();
         void hideSpinner();
-        void openPrasowka(Prasowka p);
+        void openPrasowka(Prasowka p, int n);
         void showSnackbar(String txt, int length);
         Activity getAct();
         int getSectionNumber();

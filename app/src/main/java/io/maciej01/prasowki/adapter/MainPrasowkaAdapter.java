@@ -1,7 +1,10 @@
 package io.maciej01.prasowki.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,13 +33,14 @@ public class MainPrasowkaAdapter extends RecyclerView.Adapter {
     private PrasowkiList prasowkiList;
     private Context context;
     private MainPresenter.ViewContract presenter;
+    private int color;
 
-    private class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         TextView tCategory;
         TextView tDate;
         TextView tSummary;
         TextView tTitle;
-        LinearLayout ll;
+        public LinearLayout ll;
 
         public ViewHolder(View v) {
             super(v);
@@ -45,14 +49,16 @@ public class MainPrasowkaAdapter extends RecyclerView.Adapter {
             tSummary = (TextView) v.findViewById(R.id.txtSummary);
             tTitle = (TextView) v.findViewById(R.id.txtTitle);
             ll = (LinearLayout) v.findViewById(R.id.llPrasowka);
+            ll.setTransitionName("linear");
         }
     }
 
-    public MainPrasowkaAdapter(RecyclerView recyclerView, PrasowkiList prasowkiList, Context context, MainPresenter.ViewContract presenter) {
+    public MainPrasowkaAdapter(RecyclerView recyclerView, PrasowkiList prasowkiList, Context context, MainPresenter.ViewContract presenter, int color) {
         this.recyclerView = recyclerView;
         this.prasowkiList = prasowkiList;
         this.context = context;
         this.presenter = presenter;
+        this.color = color;
     }
 
     @Override
@@ -65,7 +71,7 @@ public class MainPrasowkaAdapter extends RecyclerView.Adapter {
             public void onClick(View v) {
                 int pos = recyclerView.getChildAdapterPosition(v);
                 Prasowka p = prasowkiList.get(pos);
-                MainPrasowkaAdapter.this.onClick(p);
+                MainPrasowkaAdapter.this.onClick(p, pos);
             }
         });
         return new ViewHolder(view);
@@ -80,11 +86,18 @@ public class MainPrasowkaAdapter extends RecyclerView.Adapter {
         ((ViewHolder) holder).tTitle.setText(p.getTitle());
 
         setColors(holder, position);
+        //Pair<View, String> pair1 = Pair.create((View) ((ViewHolder) holder).ll, ((ViewHolder) holder).ll.getTransitionName());
+
+        //ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation((Activity) mContext, pair1, pair2);
     }
 
     public void setColors(RecyclerView.ViewHolder holder, int position) {
-        ((ViewHolder) holder).tCategory.setTextColor(getColorByPosition(position));
-        ((ViewHolder) holder).ll.setBackgroundColor(getColorByPosition(position));
+        int c;
+        if (color == -1) {
+            c = getColorByPosition(position);
+        } else {c = getColorByPosition(color);}
+        ((ViewHolder) holder).tCategory.setTextColor(c);
+        ((ViewHolder) holder).ll.setBackgroundColor(c);
     }
 
     @Override
@@ -92,8 +105,8 @@ public class MainPrasowkaAdapter extends RecyclerView.Adapter {
         return prasowkiList.size();
     }
 
-    public void onClick(Prasowka p) {
-        presenter.openPrasowka(p);
+    public void onClick(Prasowka p, int n) {
+        presenter.openPrasowka(p, n);
     }
     private int getColorByPosition(int n) {
         Integer[] kolory = {R.color.cRand1, R.color.cRand2, R.color.cRand3, R.color.cRand4};

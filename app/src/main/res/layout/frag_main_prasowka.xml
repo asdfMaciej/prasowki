@@ -5,7 +5,8 @@
     android:layout_height="wrap_content"
     android:padding="8dp"
     android:background="@color/colorAccent"
-    android:id="@+id/llPrasowka">
+    android:id="@+id/llPrasowka"
+    android:transitionName="linear">
 
     <TextView
         android:text="2017-05-12"
@@ -17,7 +18,8 @@
         android:textColor="?android:attr/textColorSecondaryInverse"
         android:textAlignment="center"
         android:fontFamily="sans-serif-condensed"
-        android:layout_marginBottom="2dp" />
+        android:layout_marginBottom="2dp"
+        android:transitionName="tDate"/>
 
     <TextView
         android:text="DWA DOKUMENTY PODPISANE W PEKINIE PODCZAS SPOTKANIA PREMIERÓW POLSKI I CHIN"
@@ -29,7 +31,8 @@
         android:textColor="?android:attr/textColorPrimaryInverse"
         android:textAlignment="center"
         android:fontFamily="sans-serif-condensed"
-        android:layout_marginBottom="8dp" />
+        android:layout_marginBottom="8dp"
+        android:transitionName="tTitle"/>
 
     <TextView
         android:text="Efektem piątkowych rozmów w Pekinie szefowej polskiego rządu Beaty Szydło i premiera Chin Li Keqianga było podpisanie dwóch dokumentów dotyczących..."
@@ -40,7 +43,8 @@
         android:textSize="16sp"
         android:textColor="?android:attr/textColorTertiaryInverse"
         android:textAlignment="center"
-        android:fontFamily="sans-serif" />
+        android:fontFamily="sans-serif"
+        android:transitionName="tSummary"/>
 
     <TextView
         android:text="POLSKA"
@@ -56,5 +60,6 @@
         android:background="?android:attr/colorBackground"
         android:layout_gravity="center_horizontal"
         android:layout_margin="8dp"
-        android:padding="4dp" />
+        android:padding="4dp"
+        android:transitionName="tCategory"/>
 </LinearLayout>

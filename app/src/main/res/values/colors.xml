@@ -6,7 +6,7 @@
     <color name="colorBg">#f7f7f7</color>
 
     <color name="cRand1">#FF4081</color>
-    <color name="cRand2">#FF7140</color>
-    <color name="cRand3">#B8A606</color>
-    <color name="cRand4">#9751FF</color>
+    <color name="cRand2">#FFAB40</color>
+    <color name="cRand3">#40C4FF</color>
+    <color name="cRand4">#7C4DFF</color>
 </resources>

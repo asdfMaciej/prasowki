@@ -66,6 +66,9 @@ public class Prasowka extends SugarRecord implements Serializable, Cloneable, Co
 
     public void setDetails(String desc) {
         this.pDesc = desc;
+        if(this.pSummary.isEmpty()) {
+            this.pSummary = desc.substring(0, Math.min(desc.length(), 140))+"...";
+        }
     }
     public void setSummary(String summary) { this.pSummary = summary;}
     public void setUrlArticle(String urlArticle) { this.pUrlArticle = urlArticle; }
