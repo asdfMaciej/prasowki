@@ -9,6 +9,7 @@ import java.io.IOException;
 
 import io.maciej01.prasowki.activity.MainActivity;
 import io.maciej01.prasowki.activity.MyApplication;
+import io.maciej01.prasowki.activity.PrasowkaActivity;
 import io.maciej01.prasowki.helper.DBHelper;
 import io.maciej01.prasowki.helper.PrasowkiFetcher;
 import io.maciej01.prasowki.model.Prasowka;
@@ -32,9 +33,11 @@ public class MainPresenter implements PrasowkiFetcher.PrasowkiFetcherCallback {
     }
 
     public interface ViewContract {
+        String getActivityName();
         void updateRecyclerView();
         void showSpinner();
         void hideSpinner();
+        void openPrasowka(Prasowka p);
         void showSnackbar(String txt, int length);
         Activity getAct();
         int getSectionNumber();
@@ -59,9 +62,17 @@ public class MainPresenter implements PrasowkiFetcher.PrasowkiFetcherCallback {
         if (this.viewContract == null) {return;}
         PrasowkiFetcher pf = new PrasowkiFetcher(this);
         try {
-            Log.v("mainpresenter", "begin fetch");
             viewContract.showSpinner();
-            pf.fetch_pages(AMOUNT_OF_PAGES_FETCHED);
+            Log.v("mainpresenter", "begin fetch");
+            if (viewContract.getActivityName().equals("MainFragment")) {
+                pf.fetch_pages(AMOUNT_OF_PAGES_FETCHED);
+            } else if (viewContract.getActivityName().equals("PrasowkaActivity")) {
+                if (((PrasowkaActivity) viewContract).getPrasowka().getDesc().isEmpty()) {
+                    pf.fetch_article(((PrasowkaActivity) viewContract).getPrasowka().getUrlArticle());
+                } else {
+                    doneLoading();
+                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -89,6 +100,9 @@ public class MainPresenter implements PrasowkiFetcher.PrasowkiFetcherCallback {
         if (!app.getFetched()) {
             app.setFetched(true);
             Log.v("mainpresenter", "fetching");
+            fetch();
+        } else if (viewContract.getActivityName() != "MainFragment") {
+            Log.v("mainpresenter", "fetching other than main");
             fetch();
         }
     }

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBg">
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/llPrasowka"
+    android:background="@color/colorBg">
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/recPrasowka" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtPrasowkaDesc"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:paddingTop="16dp"
+            android:textSize="18sp"
+            android:textAlignment="textStart"
+            android:fontFamily="sans-serif-condensed"
+            android:textColor="?android:attr/textColorPrimary"
+            android:background="@color/colorBg"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp" />
+
+</LinearLayout>
+    </ScrollView>

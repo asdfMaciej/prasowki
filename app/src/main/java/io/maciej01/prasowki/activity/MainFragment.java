@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 import io.maciej01.prasowki.R;
 import io.maciej01.prasowki.adapter.MainPrasowkaAdapter;
 import io.maciej01.prasowki.helper.DBHelper;
+import io.maciej01.prasowki.model.Prasowka;
 import io.maciej01.prasowki.model.PrasowkiList;
 import io.maciej01.prasowki.presenter.MainPresenter;
 
@@ -67,6 +69,11 @@ public class MainFragment extends Fragment implements MainPresenter.ViewContract
         initFragment();
 
         return rootView;
+    }
+
+    @Override
+    public String getActivityName() {
+        return "MainFragment";
     }
 
     @Override
@@ -119,6 +126,13 @@ public class MainFragment extends Fragment implements MainPresenter.ViewContract
     }
 
     @Override
+    public void openPrasowka(Prasowka p) {
+        Intent i = new Intent(getAct(), PrasowkaActivity.class);
+        i.putExtra("prasowka", p);
+        startActivity(i);
+    }
+
+    @Override
     public void showSnackbar(String txt, int length) {
         CoordinatorLayout coordinatorLayout = (CoordinatorLayout) context.findViewById(R.id.main_content);
         Snackbar snackbar = Snackbar
@@ -142,7 +156,8 @@ public class MainFragment extends Fragment implements MainPresenter.ViewContract
     }
     private void initAdapter() {
         PrasowkiList lis = mainPresenter.getListBySectionNumber();
-        adapter = new MainPrasowkaAdapter(recyclerView, lis, getAct());
+        adapter = new MainPrasowkaAdapter(recyclerView, lis, getAct(), this);
         recyclerView.setAdapter(adapter);
     }
+
 }

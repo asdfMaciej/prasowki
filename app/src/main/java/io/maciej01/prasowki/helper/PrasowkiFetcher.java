@@ -9,11 +9,13 @@ import android.util.Log;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.safety.Whitelist;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
+import io.maciej01.prasowki.activity.MyApplication;
 import io.maciej01.prasowki.model.Prasowka;
 import io.maciej01.prasowki.model.PrasowkiList;
 import io.maciej01.prasowki.presenter.MainPresenter;
@@ -146,11 +148,12 @@ public class PrasowkiFetcher {
                 }
             }
         } else {
-            String desc = doc.select("section.cb-entry-content").get(0).text();
+            String desc = elements2str(doc.select("section.cb-entry-content").get(0).select("p"));
             Prasowka _ptemp = new Prasowka();
             _ptemp.setUrlArticle(fetch_url);
             Integer n = lista.findFastIndex(_ptemp);
             lista.get(n).setDetails(desc);
+            lista.get(n).save();
             Log.v("PrasowkiFetcher", Integer.toString(n)+ " SetDetails: "+desc);
         }
         if (last_one) {done(); Log.v("prasowkifetcher", "last one");}
@@ -225,6 +228,8 @@ public class PrasowkiFetcher {
             Log.v("internet", "no internet connection");
             done();
             callback.noInternetConnection();
+            MyApplication app = ((MyApplication) callback.getViewContract().getAct().getApplication());
+            app.setFetched(false);
             return true;
         }
         return false;
@@ -242,5 +247,13 @@ public class PrasowkiFetcher {
             Log.v("connectivity", e.toString());
         }
         return false;
+    }
+
+    private String elements2str(Elements ele) {
+        String ret = "";
+        for (Element e: ele) {
+            ret += "    "+e.text()+"\n\n";
+        }
+        return ret;
     }
 }
