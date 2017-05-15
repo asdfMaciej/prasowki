@@ -2,8 +2,11 @@ package io.maciej01.prasowki.activity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -37,6 +40,8 @@ public class MainFragment extends Fragment implements MainPresenter.ViewContract
     RecyclerView recyclerView;
     MainPrasowkaAdapter adapter = null;
     MainActivity context;
+    SpinnerDialog spinnerDialog = null;
+    boolean visible;
 
     @SuppressLint("ValidFragment")
     public MainFragment() {}
@@ -60,6 +65,7 @@ public class MainFragment extends Fragment implements MainPresenter.ViewContract
         mainPresenter = new MainPresenter();
         mainPresenter.attachView(this);
         initFragment();
+
         return rootView;
     }
 
@@ -89,6 +95,41 @@ public class MainFragment extends Fragment implements MainPresenter.ViewContract
     public void onStop() {
         mainPresenter.detachView();
         super.onStop();
+    }
+
+    @Override
+    public void showSpinner() {
+        FragmentManager fm = context.getFragmentManager();
+        if (spinnerDialog != null) {
+            spinnerDialog.dismiss();
+        }
+        if (visible) {
+            spinnerDialog = new SpinnerDialog();
+            spinnerDialog.show(fm, "some_tag");
+        } else {
+            Log.v("mainfragment", "attempted to showspinner without being visible");
+        }
+    }
+
+    @Override
+    public void hideSpinner() {
+        if (spinnerDialog != null) {
+            spinnerDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void showSnackbar(String txt, int length) {
+        CoordinatorLayout coordinatorLayout = (CoordinatorLayout) context.findViewById(R.id.main_content);
+        Snackbar snackbar = Snackbar
+                .make(coordinatorLayout, txt, length);
+        snackbar.show();
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        visible = isVisibleToUser;
     }
 
     private void initFragment() {

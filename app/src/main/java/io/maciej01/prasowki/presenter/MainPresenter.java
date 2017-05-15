@@ -2,6 +2,7 @@ package io.maciej01.prasowki.presenter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 
 import java.io.IOException;
@@ -17,10 +18,24 @@ import io.maciej01.prasowki.model.PrasowkiList;
  * Created by Maciej on 2017-05-14.
  */
 
-public class MainPresenter {
+public class MainPresenter implements PrasowkiFetcher.PrasowkiFetcherCallback {
     static int AMOUNT_OF_PAGES_FETCHED = 3;
+
+    @Override
+    public void doneLoading() {
+        viewContract.hideSpinner();
+    }
+
+    @Override
+    public void noInternetConnection() {
+        viewContract.showSnackbar("Brak połączenia z internetem!", Snackbar.LENGTH_INDEFINITE);
+    }
+
     public interface ViewContract {
         void updateRecyclerView();
+        void showSpinner();
+        void hideSpinner();
+        void showSnackbar(String txt, int length);
         Activity getAct();
         int getSectionNumber();
     }
@@ -38,11 +53,14 @@ public class MainPresenter {
         this.viewContract = null;
     }
 
+    public ViewContract getViewContract() { return viewContract; }
+
     public void fetch() {
         if (this.viewContract == null) {return;}
         PrasowkiFetcher pf = new PrasowkiFetcher(this);
         try {
             Log.v("mainpresenter", "begin fetch");
+            viewContract.showSpinner();
             pf.fetch_pages(AMOUNT_OF_PAGES_FETCHED);
         } catch (IOException e) {
             e.printStackTrace();

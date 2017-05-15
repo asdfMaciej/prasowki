@@ -1,5 +1,8 @@
 package io.maciej01.prasowki.helper;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -26,6 +29,11 @@ public class PrasowkiFetcher {
     boolean fetch_single_article; // 0 for pages, 1 for article/s
     boolean working = false;
     boolean last_one;
+
+    public interface PrasowkiFetcherCallback {
+        void doneLoading();
+        void noInternetConnection();
+    }
 
     public PrasowkiFetcher(MainPresenter callback) {
         this.callback = callback;
@@ -83,6 +91,7 @@ public class PrasowkiFetcher {
     }
 
     public void fetch_pages(int amount) throws IOException {
+        if (checkForInternet()) {return;}
         if (!(1 > amount) && !(amount > 50)) {
             if (working) {
                 Log.v("PrasowkiFetcher", "Will fetch later - added to queue");
@@ -98,6 +107,7 @@ public class PrasowkiFetcher {
     }
 
     public void fetch_article(String article_url) throws IOException {
+        if (checkForInternet()) {return;}
         if (working) {
             Log.v("PrasowkiFetcher", "Will fetch later - added to queue");
             queue.add(new QueueTask(true, article_url, 1));
@@ -147,8 +157,6 @@ public class PrasowkiFetcher {
         Log.v("prasowkifetcher", doc.title());
     }
 
-
-
     private Prasowka prasowkaFromElement(Element e) {
         String title = e.select("h2.cb-post-title").get(0).text();
         String dateString = e.select("span.cb-date").get(0).text();
@@ -188,6 +196,7 @@ public class PrasowkiFetcher {
             use_queue();
         } else {
             working = false;
+            callback.doneLoading();
         }
     }
     private void use_queue() {
@@ -210,5 +219,28 @@ public class PrasowkiFetcher {
     }
     private String page_to_url(int page) {
         return "http://prasowki.org/page/"+Integer.toString(page)+"/";
+    }
+    private boolean checkForInternet() {
+        if (!isOnline()) {
+            Log.v("internet", "no internet connection");
+            done();
+            callback.noInternetConnection();
+            return true;
+        }
+        return false;
+    }
+    private boolean isOnline() {
+        try {
+            ConnectivityManager connectivityManager = (ConnectivityManager) callback.getViewContract().getAct().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+            boolean connected = networkInfo != null && networkInfo.isAvailable() &&
+                    networkInfo.isConnected();
+            return connected;
+        } catch (Exception e) {
+            System.out.println("CheckConnectivity Exception: " + e.getMessage());
+            Log.v("connectivity", e.toString());
+        }
+        return false;
     }
 }
