@@ -20,17 +20,23 @@ import io.maciej01.prasowki.presenter.MainPresenter;
  */
 
 public class PrasowkiFetcher {
-
     MainPresenter callback;
+    String fetch_url; // referenced class-wide - this is probably a bad idea
+    boolean fetch_single_article; // 0 for pages, 1 for article/s
+    boolean working = false;
+    boolean last_one;
 
     public PrasowkiFetcher(MainPresenter callback) {
         this.callback = callback;
     }
     private class FetchTask extends AsyncTask<String, Void, Document> {
+        int amount;
+
         @Override
         protected Document doInBackground(String... strings) {
             Log.v("prasowkifetcher", "doinbackground");
             String url = strings[0];
+            amount = Integer.valueOf(strings[1]);
             Document doc = null;
             try {
                 doc = Jsoup.connect(url).get();
@@ -44,13 +50,36 @@ public class PrasowkiFetcher {
         @Override
         protected void onPostExecute(Document result) {
             Log.v("prasowkifetcher", "onpostexecute");
+            amount -= 1;
+            if (!(amount <= 0)) {
+                PrasowkiFetcher.this.last_one = false;
+                try {
+                    Log.v("fetcher", "fetching n: "+Integer.toString(amount));
+                    PrasowkiFetcher.this.fetch(page_to_url(amount), amount);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                PrasowkiFetcher.this.last_one = true;
+            }
             PrasowkiFetcher.this.parse(result);
 
         }
     }
-    public void fetch() throws IOException {
-        String url = "http://prasowki.org/";
-        new FetchTask().execute(url);
+    public void fetch_pages(int amount) throws IOException {
+        if (!(1 > amount) && !(amount > 50)) {
+            fetch_single_article = false;
+            fetch(page_to_url(amount), amount);
+        } else {
+            throw new IOException("Amount of pages fetched must be 1 > n > 50!");
+        }
+    }
+    private void fetch(String url, int amount) throws IOException {
+        fetch_url = url;
+        new FetchTask().execute(fetch_url, Integer.toString(amount));
+    }
+    private String page_to_url(int page) {
+        return "http://prasowki.org/page/"+Integer.toString(page)+"/";
     }
 
     public void parse(Document doc) {
@@ -73,9 +102,8 @@ public class PrasowkiFetcher {
                 }
             }
         }
+        if (last_one) {done(); Log.v("prasowkifetcher", "last one");}
         Log.v("prasowkifetcher", doc.title());
-        callback.uponFetching();
-
     }
 
     private Prasowka prasowkaFromElement(Element e) {
@@ -109,5 +137,10 @@ public class PrasowkiFetcher {
         if (s.contains("category-polska")) { category = "polska"; }
         if (s.contains("category-swiat")) { category = "świat"; }
         return category;
+    }
+
+    private void done() {
+        working = false;
+        callback.uponFetching();
     }
 }

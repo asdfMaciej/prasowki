@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mViewPager;
 
     public void updateRecyclerViews() {
+        boolean sorted = false;
         for (MainFragment frag : mSectionsPagerAdapter.getFragmenty()) {
             frag._updateRecyclerView();
         }

@@ -70,7 +70,6 @@ public class MainFragment extends Fragment implements MainPresenter.ViewContract
 
     public void _updateRecyclerView() {
         if (adapter != null) {
-            mainPresenter.sortList();
             initAdapter();
             adapter.notifyDataSetChanged();
         } else {

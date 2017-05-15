@@ -68,7 +68,7 @@ public class Prasowka extends SugarRecord implements Serializable, Cloneable, Co
     public void setSummary(String summary) { this.pSummary = summary;}
 
     public Date getDate() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-DD");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date d = null;
         try {
             d = dateFormat.parse(pDateString);

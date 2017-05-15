@@ -18,6 +18,7 @@ import io.maciej01.prasowki.model.PrasowkiList;
  */
 
 public class MainPresenter {
+    static int AMOUNT_OF_PAGES_FETCHED = 3;
     public interface ViewContract {
         void updateRecyclerView();
         Activity getAct();
@@ -42,7 +43,7 @@ public class MainPresenter {
         PrasowkiFetcher pf = new PrasowkiFetcher(this);
         try {
             Log.v("mainpresenter", "begin fetch");
-            pf.fetch();
+            pf.fetch_pages(AMOUNT_OF_PAGES_FETCHED);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -56,6 +57,7 @@ public class MainPresenter {
         if (n == 1) {lis = lista;}
         else if (n == 2) {lis = lista.getPolska();}
         else if (n == 3) {lis = lista.getSwiat();}
+        lis.sort();
         return lis;
     }
 
@@ -73,7 +75,6 @@ public class MainPresenter {
         MyApplication app = ((MyApplication) viewContract.getAct().getApplication());
         if (!app.getFetched()) {
             app.setFetched(true);
-            DBHelper.getInstance().sql_delete_table();
             Log.v("mainpresenter", "fetching");
             fetch();
         }
