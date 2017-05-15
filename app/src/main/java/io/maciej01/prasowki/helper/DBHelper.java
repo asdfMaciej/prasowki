@@ -1,5 +1,6 @@
 package io.maciej01.prasowki.helper;
 
+import io.maciej01.prasowki.model.Prasowka;
 import io.maciej01.prasowki.model.PrasowkiList;
 
 /**
@@ -12,7 +13,14 @@ public class DBHelper {
     public static DBHelper getInstance() {
         return ourInstance;
     }
-    public PrasowkiList getLista() { return lista; }
+
+    public PrasowkiList getLista() {
+        return lista;
+    }
+    public void sql_delete_table() {
+        Prasowka.executeQuery("DELETE FROM PRASOWKA;");
+        this.lista.clear();
+    }
     private DBHelper() {
     }
 }

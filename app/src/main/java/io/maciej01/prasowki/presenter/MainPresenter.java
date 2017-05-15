@@ -8,7 +8,10 @@ import java.io.IOException;
 
 import io.maciej01.prasowki.activity.MainActivity;
 import io.maciej01.prasowki.activity.MyApplication;
+import io.maciej01.prasowki.helper.DBHelper;
 import io.maciej01.prasowki.helper.PrasowkiFetcher;
+import io.maciej01.prasowki.model.Prasowka;
+import io.maciej01.prasowki.model.PrasowkiList;
 
 /**
  * Created by Maciej on 2017-05-14.
@@ -35,6 +38,7 @@ public class MainPresenter {
     }
 
     public void fetch() {
+        if (this.viewContract == null) {return;}
         PrasowkiFetcher pf = new PrasowkiFetcher(this);
         try {
             Log.v("mainpresenter", "begin fetch");
@@ -44,14 +48,32 @@ public class MainPresenter {
         }
     }
 
+    public PrasowkiList getListBySectionNumber() {
+        if (this.viewContract == null) {return null;}
+        PrasowkiList lis = null;
+        PrasowkiList lista = DBHelper.getInstance().getLista();
+        int n = viewContract.getSectionNumber();
+        if (n == 1) {lis = lista;}
+        else if (n == 2) {lis = lista.getPolska();}
+        else if (n == 3) {lis = lista.getSwiat();}
+        return lis;
+    }
+
+    public void sortList() {
+        if (this.viewContract == null) {return;}
+        DBHelper.getInstance().getLista().sort();
+    }
+
     public void uponFetching() {
         viewContract.updateRecyclerView();
         Log.v("mainpresenter", "updaterecycler");
     }
     private void initializeView() {
+        if (this.viewContract == null) {Log.v("mainpresenter", "init failed due to null viewcontract");return;}
         MyApplication app = ((MyApplication) viewContract.getAct().getApplication());
         if (!app.getFetched()) {
             app.setFetched(true);
+            DBHelper.getInstance().sql_delete_table();
             Log.v("mainpresenter", "fetching");
             fetch();
         }

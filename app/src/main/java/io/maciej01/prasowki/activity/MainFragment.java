@@ -37,9 +37,9 @@ public class MainFragment extends Fragment implements MainPresenter.ViewContract
     RecyclerView recyclerView;
     MainPrasowkaAdapter adapter = null;
     MainActivity context;
-    PrasowkiList lista = DBHelper.getInstance().getLista();
 
     @SuppressLint("ValidFragment")
+    public MainFragment() {}
     public MainFragment(MainActivity context) {
         this.context = context;
     }
@@ -70,7 +70,7 @@ public class MainFragment extends Fragment implements MainPresenter.ViewContract
 
     public void _updateRecyclerView() {
         if (adapter != null) {
-            lista.sort();
+            mainPresenter.sortList();
             initAdapter();
             adapter.notifyDataSetChanged();
         } else {
@@ -84,7 +84,13 @@ public class MainFragment extends Fragment implements MainPresenter.ViewContract
     }
 
     @Override
-    public Activity getAct() { return context; }
+    public Activity getAct() { return getActivity(); }
+
+    @Override
+    public void onStop() {
+        mainPresenter.detachView();
+        super.onStop();
+    }
 
     private void initFragment() {
         recyclerView = (RecyclerView) rootView.findViewById(R.id.recMain);
@@ -95,12 +101,8 @@ public class MainFragment extends Fragment implements MainPresenter.ViewContract
         initAdapter();
     }
     private void initAdapter() {
-        PrasowkiList lis = null;
-        int n = getSectionNumber();
-        if (n == 1) {lis = lista;}
-        else if (n == 2) {lis = lista.getPolska();}
-        else if (n == 3) {lis = lista.getSwiat();}
-        adapter = new MainPrasowkaAdapter(recyclerView, lis, context);
+        PrasowkiList lis = mainPresenter.getListBySectionNumber();
+        adapter = new MainPrasowkaAdapter(recyclerView, lis, getAct());
         recyclerView.setAdapter(adapter);
     }
 }

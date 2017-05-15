@@ -52,6 +52,16 @@ public class PrasowkiList implements Serializable {
         return null;
     }
 
+    public Integer findFastIndex(Prasowka pras) {
+        Integer index = null;
+        for (Prasowka p : lista) {
+            if (index == null) {index = 0;}
+            if (pras.fEquals(p)) {return index;}
+            index += 1;
+        }
+        return null;
+    }
+
     public boolean isIn(Prasowka pras) {
         boolean jest = false;
         for (Prasowka p: lista) {

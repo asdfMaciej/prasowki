@@ -59,9 +59,6 @@ public class MainActivity extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
-
-        DBHelper help = DBHelper.getInstance();
-        PrasowkiList lista = help.getLista();
     }
 
 

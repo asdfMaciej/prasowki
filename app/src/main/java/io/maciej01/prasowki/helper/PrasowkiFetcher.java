@@ -66,6 +66,12 @@ public class PrasowkiFetcher {
 
         for (Prasowka p : tempArray) {
             if (!lista.isIn(p)) {lista.add(p);}
+            else {
+                int n = lista.findFastIndex(p);
+                if (lista.get(n).getSummary().isEmpty() && !p.getSummary().isEmpty()) {
+                    lista.get(n).setSummary(p.getSummary());
+                }
+            }
         }
         Log.v("prasowkifetcher", doc.title());
         callback.uponFetching();
