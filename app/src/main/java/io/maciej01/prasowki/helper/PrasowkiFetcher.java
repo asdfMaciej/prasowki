@@ -20,6 +20,7 @@ import io.maciej01.prasowki.presenter.MainPresenter;
  */
 
 public class PrasowkiFetcher {
+    ArrayList<QueueTask> queue = new ArrayList<>();
     MainPresenter callback;
     String fetch_url; // referenced class-wide - this is probably a bad idea
     boolean fetch_single_article; // 0 for pages, 1 for article/s
@@ -28,6 +29,16 @@ public class PrasowkiFetcher {
 
     public PrasowkiFetcher(MainPresenter callback) {
         this.callback = callback;
+    }
+    private class QueueTask {
+        public boolean f_single;
+        public String page;
+        public int amount;
+        public QueueTask(boolean f_single, String page, int amount) {
+            this.f_single = f_single;
+            this.page = page;
+            this.amount = amount;
+        }
     }
     private class FetchTask extends AsyncTask<String, Void, Document> {
         int amount;
@@ -66,45 +77,77 @@ public class PrasowkiFetcher {
 
         }
     }
+
+    public boolean isWorking() {
+        return working;
+    }
+
     public void fetch_pages(int amount) throws IOException {
         if (!(1 > amount) && !(amount > 50)) {
-            fetch_single_article = false;
-            fetch(page_to_url(amount), amount);
+            if (working) {
+                Log.v("PrasowkiFetcher", "Will fetch later - added to queue");
+                queue.add(new QueueTask(false, page_to_url(amount), amount));
+            } else {
+                working = true;
+                fetch_single_article = false;
+                fetch(page_to_url(amount), amount);
+            }
         } else {
             throw new IOException("Amount of pages fetched must be 1 > n > 50!");
         }
     }
-    private void fetch(String url, int amount) throws IOException {
-        fetch_url = url;
-        new FetchTask().execute(fetch_url, Integer.toString(amount));
+
+    public void fetch_article(String article_url) throws IOException {
+        if (working) {
+            Log.v("PrasowkiFetcher", "Will fetch later - added to queue");
+            queue.add(new QueueTask(true, article_url, 1));
+        } else {
+            working = true;
+            fetch_single_article = true;
+            fetch(article_url, 1);
+        }
     }
-    private String page_to_url(int page) {
-        return "http://prasowki.org/page/"+Integer.toString(page)+"/";
-    }
+
 
     public void parse(Document doc) {
         Log.v("prasowkifetcher", "parse");
-        Elements h2s = doc.select("article.cb-blog-style-a");
-        Elements big3 = doc.select("div.cb-grid-feature");
-        ArrayList<Prasowka> tempArray = new ArrayList<>();
-        for (Element e : h2s) { tempArray.add(prasowkaFromElement(e)); }
-        for (Element e : big3) { tempArray.add(prasowkaFromBig(e)); }
-
         DBHelper help = DBHelper.getInstance();
         PrasowkiList lista = help.getLista();
 
-        for (Prasowka p : tempArray) {
-            if (!lista.isIn(p)) {lista.add(p);}
-            else {
-                int n = lista.findFastIndex(p);
-                if (lista.get(n).getSummary().isEmpty() && !p.getSummary().isEmpty()) {
-                    lista.get(n).setSummary(p.getSummary());
+        if (!this.fetch_single_article) {
+            Elements h2s = doc.select("article.cb-blog-style-a");
+            Elements big3 = doc.select("div.cb-grid-feature");
+            ArrayList<Prasowka> tempArray = new ArrayList<>();
+            for (Element e : h2s) {
+                tempArray.add(prasowkaFromElement(e));
+            }
+            for (Element e : big3) {
+                tempArray.add(prasowkaFromBig(e));
+            }
+
+            for (Prasowka p : tempArray) {
+                if (!lista.isIn(p)) {
+                    lista.add(p);
+                } else {
+                    int n = lista.findFastIndex(p);
+                    if (lista.get(n).getSummary().isEmpty() && !p.getSummary().isEmpty()) {
+                        lista.get(n).setSummary(p.getSummary());
+                    }
                 }
             }
+        } else {
+            String desc = doc.select("section.cb-entry-content").get(0).text();
+            Prasowka _ptemp = new Prasowka();
+            _ptemp.setUrlArticle(fetch_url);
+            Integer n = lista.findFastIndex(_ptemp);
+            lista.get(n).setDetails(desc);
+            Log.v("PrasowkiFetcher", Integer.toString(n)+ " SetDetails: "+desc);
         }
         if (last_one) {done(); Log.v("prasowkifetcher", "last one");}
         Log.v("prasowkifetcher", doc.title());
     }
+
+
 
     private Prasowka prasowkaFromElement(Element e) {
         String title = e.select("h2.cb-post-title").get(0).text();
@@ -140,7 +183,32 @@ public class PrasowkiFetcher {
     }
 
     private void done() {
-        working = false;
         callback.uponFetching();
+        if (!queue.isEmpty()) {
+            use_queue();
+        } else {
+            working = false;
+        }
+    }
+    private void use_queue() {
+        Log.v("PrasowkiFetcher", "getting queue element..");
+        QueueTask request = queue.get(0);
+        queue.remove(0);
+        fetch_single_article = request.f_single;
+        String page = request.page;
+        int amo = request.amount;
+            try {
+                fetch(page, amo);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        //queue.add(new Object[]{fetch_single_article, page_to_url(amount), amount});
+    }
+    private void fetch(String url, int amount) throws IOException {
+        fetch_url = url;
+        new FetchTask().execute(fetch_url, Integer.toString(amount));
+    }
+    private String page_to_url(int page) {
+        return "http://prasowki.org/page/"+Integer.toString(page)+"/";
     }
 }

@@ -61,11 +61,6 @@ public class MainPresenter {
         return lis;
     }
 
-    public void sortList() {
-        if (this.viewContract == null) {return;}
-        DBHelper.getInstance().getLista().sort();
-    }
-
     public void uponFetching() {
         viewContract.updateRecyclerView();
         Log.v("mainpresenter", "updaterecycler");

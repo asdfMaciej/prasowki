@@ -1,5 +1,7 @@
 package io.maciej01.prasowki.model;
 
+import android.util.Log;
+
 import com.orm.SugarRecord;
 
 import java.io.Serializable;
@@ -66,6 +68,7 @@ public class Prasowka extends SugarRecord implements Serializable, Cloneable, Co
         this.pDesc = desc;
     }
     public void setSummary(String summary) { this.pSummary = summary;}
+    public void setUrlArticle(String urlArticle) { this.pUrlArticle = urlArticle; }
 
     public Date getDate() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -88,7 +91,10 @@ public class Prasowka extends SugarRecord implements Serializable, Cloneable, Co
 
     @Override
     public int compareTo(Prasowka p) {
-        return getDate().compareTo(p.getDate());
+        int ret = getDate().compareTo(p.getDate());
+        if (ret == 0) {ret = 0 - getSummary().compareTo(p.getSummary());}
+        if (ret == 0) {ret = 0 - getTitle().compareTo(p.getTitle());}
+        return ret;
     }
 
 }
