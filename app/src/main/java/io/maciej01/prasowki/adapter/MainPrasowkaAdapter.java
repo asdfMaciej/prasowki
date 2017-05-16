@@ -104,6 +104,8 @@ public class MainPrasowkaAdapter extends RecyclerView.Adapter {
     public int getItemCount() {
         return prasowkiList.size();
     }
+    public void setPrasowkiList(PrasowkiList prasowkiList) {this.prasowkiList = prasowkiList; notifyDataSetChanged();}
+    public PrasowkiList getPrasowkiList() {return prasowkiList;}
 
     public void onClick(Prasowka p, int n) {
         presenter.openPrasowka(p, n);

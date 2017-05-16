@@ -95,8 +95,8 @@ public class Prasowka extends SugarRecord implements Serializable, Cloneable, Co
     @Override
     public int compareTo(Prasowka p) {
         int ret = getDate().compareTo(p.getDate());
-        if (ret == 0) {ret = 0 - getSummary().compareTo(p.getSummary());}
         if (ret == 0) {ret = 0 - getTitle().compareTo(p.getTitle());}
+        if (ret == 0) {ret = 0 - getSummary().compareTo(p.getSummary());}
         return ret;
     }
 

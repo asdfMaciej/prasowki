@@ -40,8 +40,10 @@ public class PrasowkaActivity extends AppCompatActivity implements MainPresenter
     MainPrasowkaAdapter adapter = null;
     Prasowka prasowka;
     MainPresenter mainPresenter;
+    int presenterSection;
     SpinnerDialog spinnerDialog = null;
     boolean dontdouble = true;
+    int list_pos;
     @BindView(R.id.txtPrasowkaDesc) TextView desc;
 
     @Override
@@ -51,6 +53,7 @@ public class PrasowkaActivity extends AppCompatActivity implements MainPresenter
         ButterKnife.bind(this);
         Intent i = getIntent();
         prasowka = (Prasowka) i.getSerializableExtra("prasowka");
+        presenterSection = (int) i.getSerializableExtra("presenter");
         mainPresenter = new MainPresenter();
         mainPresenter.attachView(this);
         initActivity();
@@ -94,8 +97,8 @@ public class PrasowkaActivity extends AppCompatActivity implements MainPresenter
             ArrayList<Prasowka> _l = new ArrayList<>();
             _l.add(prasowka);
             PrasowkiList meme = new PrasowkiList(_l);
-            int pos = mainPresenter.getListBySectionNumber().findFastIndex(prasowka);
-            adapter = new MainPrasowkaAdapter(recyclerView, meme, this, this, pos);
+            list_pos = mainPresenter.getListBySectionNumber().findFastIndex(prasowka);
+            adapter = new MainPrasowkaAdapter(recyclerView, meme, this, this, list_pos);
             recyclerView.setAdapter(adapter);
             desc.setText(prasowka.getDesc());
         }
@@ -119,6 +122,11 @@ public class PrasowkaActivity extends AppCompatActivity implements MainPresenter
     }
 
     @Override
+    public void _refreshRecyclerView(String url) {
+
+    }
+
+    @Override
     public void showSpinner() {
         android.app.FragmentManager fm = getFragmentManager();
         if (spinnerDialog != null) {
@@ -135,6 +143,14 @@ public class PrasowkaActivity extends AppCompatActivity implements MainPresenter
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent i = new Intent();
+        i.putExtra("position", list_pos);
+        i.putExtra("url", prasowka.getUrlArticle());
+        setResult(RESULT_OK, i);
+        super.onBackPressed();
+    }
     @Override
     public void openPrasowka(Prasowka p, int n) {
         return;
@@ -154,5 +170,5 @@ public class PrasowkaActivity extends AppCompatActivity implements MainPresenter
     }
 
     @Override
-    public int getSectionNumber() {return 1;}
+    public int getSectionNumber() {return presenterSection;}
 }

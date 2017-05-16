@@ -6,6 +6,7 @@ import android.support.design.widget.Snackbar;
 import android.util.Log;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 import io.maciej01.prasowki.activity.MainActivity;
 import io.maciej01.prasowki.activity.MyApplication;
@@ -35,6 +36,7 @@ public class MainPresenter implements PrasowkiFetcher.PrasowkiFetcherCallback {
     public interface ViewContract {
         String getActivityName();
         void updateRecyclerView();
+        void _refreshRecyclerView(String url);
         void showSpinner();
         void hideSpinner();
         void openPrasowka(Prasowka p, int n);
@@ -79,10 +81,12 @@ public class MainPresenter implements PrasowkiFetcher.PrasowkiFetcherCallback {
     }
 
     public PrasowkiList getListBySectionNumber() {
-        if (this.viewContract == null) {return null;}
+        int n = viewContract.getSectionNumber();
+        return getListBySectionNumber(n);
+    }
+    public PrasowkiList getListBySectionNumber(int n) {
         PrasowkiList lis = null;
         PrasowkiList lista = DBHelper.getInstance().getLista();
-        int n = viewContract.getSectionNumber();
         if (n == 1) {lis = lista;}
         else if (n == 2) {lis = lista.getPolska();}
         else if (n == 3) {lis = lista.getSwiat();}

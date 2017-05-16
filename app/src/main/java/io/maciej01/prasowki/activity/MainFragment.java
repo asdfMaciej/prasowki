@@ -20,6 +20,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import io.maciej01.prasowki.R;
 import io.maciej01.prasowki.adapter.MainPrasowkaAdapter;
 import io.maciej01.prasowki.helper.DBHelper;
@@ -83,6 +85,20 @@ public class MainFragment extends Fragment implements MainPresenter.ViewContract
         context.updateRecyclerViews();
     }
 
+    @Override
+    public void _refreshRecyclerView(String url) {
+        Prasowka prasowka = new Prasowka();
+        prasowka.setUrlArticle(url);
+        ArrayList<Prasowka> _l = new ArrayList<>();
+        _l.add(prasowka);
+        if (mainPresenter != null) {
+            Integer list_pos = mainPresenter.getListBySectionNumber(getSectionNumber()).findFastIndex(prasowka);
+            if (list_pos != null) {
+                adapter.notifyItemChanged(list_pos);
+            }
+        }
+    }
+
     public void _updateRecyclerView() {
         if (adapter != null) {
             initAdapter();
@@ -131,9 +147,11 @@ public class MainFragment extends Fragment implements MainPresenter.ViewContract
     public void openPrasowka(Prasowka p, int n) {
         Intent i = new Intent(getAct(), PrasowkaActivity.class);
         i.putExtra("prasowka", p);
+        i.putExtra("presenter", getSectionNumber());
         LinearLayout ll = (LinearLayout) recyclerView.findViewHolderForAdapterPosition(n).itemView.findViewById(R.id.llPrasowka);
+        ll.setTransitionName("linear");
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), ll, "linear");
-        startActivity(i, options.toBundle());
+        startActivityForResult(i, 1, options.toBundle());
     }
 
     @Override
@@ -142,6 +160,18 @@ public class MainFragment extends Fragment implements MainPresenter.ViewContract
         Snackbar snackbar = Snackbar
                 .make(coordinatorLayout, txt, length);
         snackbar.show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1) {
+            //adapter.notifyItemChanged(data.getIntExtra("position", -1));
+            context.refreshRecyclerViewsByUrl(data.getStringExtra("url"));
+            //updateRecyclerView();
+            //adapter.setPrasowkiList(mainPresenter.getListBySectionNumber(getSectionNumber()));
+            //adapter.notifyDataSetChanged();
+            Log.v("mainfragment", "returned from prasowkaactivity");
+        }
     }
 
     @Override
