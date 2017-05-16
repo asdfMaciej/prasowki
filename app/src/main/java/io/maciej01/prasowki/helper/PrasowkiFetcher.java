@@ -234,7 +234,7 @@ public class PrasowkiFetcher {
         }
         return false;
     }
-    private boolean isOnline() {
+    public boolean isOnline() {
         try {
             ConnectivityManager connectivityManager = (ConnectivityManager) callback.getViewContract().getAct().getSystemService(Context.CONNECTIVITY_SERVICE);
 

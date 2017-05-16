@@ -102,9 +102,14 @@ public class MainPresenter implements PrasowkiFetcher.PrasowkiFetcherCallback {
         if (this.viewContract == null) {Log.v("mainpresenter", "init failed due to null viewcontract");return;}
         MyApplication app = ((MyApplication) viewContract.getAct().getApplication());
         if (!app.getFetched()) {
-            app.setFetched(true);
-            Log.v("mainpresenter", "fetching");
-            fetch();
+            // check if internet
+            if ((new PrasowkiFetcher(this)).isOnline()) {
+                app.setFetched(true);
+                Log.v("mainpresenter", "fetching");
+                fetch();
+            } else {
+                noInternetConnection();
+            }
         } else if (viewContract.getActivityName() != "MainFragment") {
             Log.v("mainpresenter", "fetching other than main");
             fetch();
